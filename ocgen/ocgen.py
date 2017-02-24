@@ -5,11 +5,20 @@
 #
 
 import sys
+import os
 import aubio
+
+class MusicFile:
+    def __init__(self, filename):
+        self.filename = filename
+
+
 
 # Main entry point to program
 def main(filepath):
     print(filepath)
+    print(os.getcwd())
+    pitch_list = get_pitches()
     pass
 
 if __name__ == "__main__":

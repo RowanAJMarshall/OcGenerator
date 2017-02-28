@@ -8,13 +8,54 @@ import sys
 import os
 import aubio
 
+def filter_pitches(downsample, pitches):
+    return pitches[::downsample]
+
+def notes_per_second():
+    raise NotImplementedError("Implement please")
+
+def average_notes(notes: list):
+    raise NotImplementedError("Implement please")
+
+def in_bounds(avg_val, num):
+    bounds = 2
+    if num > avg_val + bounds or num < avg_val - bounds:
+        return False
+    return True
+
+# Smooths out pitches, grouping them as an average within a set bound
+def smooth_pitches(pitches: list, time: int) -> list:
+    tolerance = 2
+    naive_notes = []
+    avg_val = pitches[0]
+    
+    for num in pitches:
+        if in_bounds(avg_val, num):
+            avg_val = int((num + avg_val)/2)
+        else:
+            naive_notes.append(avg_val)
+            avg_val = num
+    naive_notes.append(avg_val)
+    return naive_notes
+    
+
+        
+
+
+    
+
+
+
+
+
 def get_pitches(filename: str) -> list:
     downsample = 1
-    samplerate = 44100//downsample
+    samplerate = int(44100/downsample)
 
-    win_s = 4096//downsample
-    hop_s = 512//downsample
+    win_s = int(4096/downsample)
+    hop_s = int(4096/downsample)
 
+    #print(str(samplerate))
     s = aubio.source(filename, samplerate, hop_s)
     samplerate = s.samplerate
 
@@ -26,6 +67,7 @@ def get_pitches(filename: str) -> list:
     pitches = []
     confidences = []
     total_frames = 0
+    
     while True:
         samples, read = s()
         pitch = pitch_o(samples)[0]
@@ -36,10 +78,7 @@ def get_pitches(filename: str) -> list:
         total_frames += read
         if read < hop_s: break
 
-    if 0: sys.exit(0)
-
- #   for i, p in enumerate(pitches):
- #       print("Time: " + str(samples[i]) + ", Pitch: " + str(p))
+    print(len(pitches))
 
 
 

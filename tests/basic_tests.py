@@ -8,7 +8,7 @@ class BasicTests(unittest.TestCase):
     FILENAME = "ocgen/tests/testdata/music.mp3"
 
     def setUp(self):
-        pass
+       pass
 
     def tearDown(self):
         pass
@@ -17,8 +17,8 @@ class BasicTests(unittest.TestCase):
         pass
 
     def test_image_extraction(self):
-        tab_gen.get_image_12_hole(0).show()
-        time.sleep(1)
+        pass
+        # tab_gen.get_image_12_hole(0).show()
 
     def testDownsamplePitches(self):
         nums = [0,1,2,3,4,5,7,8,9]

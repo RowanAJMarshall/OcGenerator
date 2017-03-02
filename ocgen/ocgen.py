@@ -25,7 +25,6 @@ def in_bounds(avg_val, num):
 
 # Smooths out pitches, grouping them as an average within a set bound
 def smooth_pitches(pitches: list, time: int) -> list:
-    tolerance = 2
     naive_notes = []
     avg_val = None
     max_notes = 3 / len(pitches)
@@ -46,15 +45,6 @@ def smooth_pitches(pitches: list, time: int) -> list:
     naive_notes.append(avg_val)
     return naive_notes
     
-
-        
-
-
-    
-
-
-
-
 
 def get_pitches(filename: str) -> list:
     downsample = 1
@@ -97,6 +87,13 @@ def get_pitches(filename: str) -> list:
 def main(filepath: str):
     print(filepath)
     print(os.getcwd())
+    config = {}
+    config['bounds'] = 2
+    config['downsample'] = 1
+    config['samplerate'] = 44100
+    config['win_s'] = 4096
+    config['hop_s'] = 4096
+    set_config(config)
     pitch_list = get_pitches(filepath)
     pass
 

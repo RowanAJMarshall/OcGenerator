@@ -1,5 +1,7 @@
 import unittest
 from ocgen import ocgen
+from ocgen import tab_gen
+import time
 
 class BasicTests(unittest.TestCase):
 
@@ -13,6 +15,10 @@ class BasicTests(unittest.TestCase):
 
     def testFilePassedSuccessfully(self):
         pass
+
+    def test_image_extraction(self):
+        tab_gen.get_image_12_hole(0).show()
+        time.sleep(1)
 
     def testDownsamplePitches(self):
         nums = [0,1,2,3,4,5,7,8,9]

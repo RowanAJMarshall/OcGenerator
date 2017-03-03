@@ -1,4 +1,21 @@
 from PIL import Image
+from note import Note
+import sys
+
+def get_max_min(notes: list):
+    max = 0
+    min =  sys.maxint
+    for note in notes:
+        if note.pitch < min:
+            min = note.pitch
+        elif note.pitch > max:
+            max = note.pitch
+    return max, min
+
+def create_tabs(notes: list):
+    max, min = get_max_min(notes)
+    
+
 
 def get_image_12_hole(num: int):
     if num > 21 or num < 0:

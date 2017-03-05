@@ -7,15 +7,10 @@
 import sys
 import os
 import aubio
+from ocgen.note import Note
 
 def filter_pitches(downsample, pitches):
     return pitches[::downsample]
-
-def notes_per_second():
-    raise NotImplementedError("Implement please")
-
-def average_notes(notes: list):
-    raise NotImplementedError("Implement please")
 
 def in_bounds(avg_val, num):
     bounds = 2
@@ -23,26 +18,28 @@ def in_bounds(avg_val, num):
         return False
     return True
 
+
 # Smooths out pitches, grouping them as an average within a set bound
 def smooth_pitches(pitches: list, time: int) -> list:
     naive_notes = []
     avg_val = None
-    max_notes = 3 / len(pitches)
-    min_size = len(pitches) / max_notes
-    current_size = 0
+    min_count = 5
+    count = 0
     for num in pitches:
         if avg_val == None:
             avg_val = num
         if in_bounds(avg_val, num):
             avg_val = int((num + avg_val)/2)
-            current_size += 1
-        elif current_size >= min_size:
-            naive_notes.append(avg_val)
-            avg_val = num
+            count += 1
         else:
-            naive_notes.append(avg_val)
+           # if count < min_count:
+           #     avg_val = None
+           #     count = 0
+           #     continue
+            naive_notes.append(Note(avg_val, count))
             avg_val = num
-    naive_notes.append(avg_val)
+            count = 1
+    naive_notes.append(Note(avg_val, count))
     return naive_notes
     
 
@@ -87,13 +84,6 @@ def get_pitches(filename: str) -> list:
 def main(filepath: str):
     print(filepath)
     print(os.getcwd())
-    config = {}
-    config['bounds'] = 2
-    config['downsample'] = 1
-    config['samplerate'] = 44100
-    config['win_s'] = 4096
-    config['hop_s'] = 4096
-    set_config(config)
     pitch_list = get_pitches(filepath)
     pass
 

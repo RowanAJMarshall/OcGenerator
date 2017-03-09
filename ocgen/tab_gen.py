@@ -33,8 +33,13 @@ def construct_tabs(notes: list):
     return new_image
 
 
-def overlay_notes(notes: list):
-    pass
+def overlay_notes_12_hole(notes: list):
+    num_of_notes = 21
+    max_note, min_note = get_max_min_notes(notes)
+    note_range = max_note - min_note
+    pitch_per_note = note_range // num_of_notes
+    points = []
+
 
 def get_max_min_notes(notes: list):
     max = 0
@@ -45,6 +50,18 @@ def get_max_min_notes(notes: list):
         elif note.pitch > max:
             max = note.pitch
     return max, min
+
+
+def pitch_to_note_transform(pitches):
+    min_note = sys.maxsize
+    max_note = 0
+
+    for pitch in pitches:
+        if pitch < min_note:
+            min_note = pitch
+        elif pitch > max_note:
+            max_note = pitch
+    
 
 
 def create_tabs(notes: list):

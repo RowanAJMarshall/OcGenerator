@@ -3,6 +3,7 @@ from ocgen import ocgen
 from ocgen import tab_gen
 from ocgen.note import Note
 
+
 class BasicTests(unittest.TestCase):
 
     FILENAME = "ocgen/tests/testdata/music.mp3"
@@ -38,7 +39,7 @@ class BasicTests(unittest.TestCase):
         self.assertFalse(ocgen.in_bounds(9, 12))
     
     def test_pitch_smoothing(self):
-        pitches = [0,0,0,0,35,35,37,9,7,8,8]
+        pitches = [0,0,0,0,35,35,37,9,7,8,8,0]
         smoothed_pitches = ocgen.smooth_pitches(pitches, 1)
         self.assert_note_lists_equal(smoothed_pitches, [Note(0, 4),Note(36, 3),Note(8, 4)])
 

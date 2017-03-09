@@ -8,7 +8,7 @@ app.secret_key = "42"
 app.config['DEBUG'] = True
 
 @app.route('/', methods=["GET"])
-def index():
+def index(filename=None):
     return render_template("index.html")
 
 

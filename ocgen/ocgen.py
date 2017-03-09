@@ -7,10 +7,13 @@
 import sys
 import os
 import aubio
-from ocgen.note import Note
+import ocgen
+from note import Note
+
 
 def filter_pitches(downsample, pitches):
     return pitches[::downsample]
+
 
 def in_bounds(avg_val, num):
     bounds = 2
@@ -19,27 +22,30 @@ def in_bounds(avg_val, num):
     return True
 
 
-# Smooths out pitches, grouping them as an average within a set bound
 def smooth_pitches(pitches: list, time: int) -> list:
     naive_notes = []
     avg_val = None
-    min_count = 5
+    min_count = 2
     count = 0
     for num in pitches:
-        if avg_val == None:
+        num = int(num)
+        if num < 1:
+            continue
+        if avg_val is None:
             avg_val = num
         if in_bounds(avg_val, num):
             avg_val = int((num + avg_val)/2)
             count += 1
         else:
-           # if count < min_count:
-           #     avg_val = None
-           #     count = 0
-           #     continue
-            naive_notes.append(Note(avg_val, count))
-            avg_val = num
+            if count < min_count:
+                avg_val = None
+                count = 0
+                continue
+            naive_notes.append(avg_val)
+            avg_val = int(num)
             count = 1
-    naive_notes.append(Note(avg_val, count))
+    if count >= min_count:
+        naive_notes.append(avg_val)
     return naive_notes
     
 
@@ -50,7 +56,6 @@ def get_pitches(filename: str) -> list:
     win_s = int(4096/downsample)
     hop_s = int(4096/downsample)
 
-    #print(str(samplerate))
     s = aubio.source(filename, samplerate, hop_s)
     samplerate = s.samplerate
 
@@ -72,12 +77,13 @@ def get_pitches(filename: str) -> list:
         confidences += [confidence]
         total_frames += read
         if read < hop_s: break
-
-    print(len(pitches))
-
+    return smooth_pitches(pitches, 0)
 
 
-
+def write_file(lst):
+    with open("log.txt", 'w') as log:
+        for l in lst:
+            log.write("\n" + str(l))
 
 
 # Main entry point to program
@@ -85,6 +91,7 @@ def main(filepath: str):
     print(filepath)
     print(os.getcwd())
     pitch_list = get_pitches(filepath)
+    write_file(pitch_list)
     pass
 
 if __name__ == "__main__":

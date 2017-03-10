@@ -11,6 +11,19 @@ import ocgen
 from note import Note
 
 
+def extract_onsets(pitches, onset, source, hop_s=512//2):
+    frames = 0
+    onsets = []
+    while True:
+        samples, read = source()
+        if onset(samples):
+            print("%f" % onset.get_last_s())
+            onsets.append(onset.get_last())
+        frames += read
+        if read < hop_s: break
+
+
+
 def filter_pitches(downsample, pitches):
     return pitches[::downsample]
 
@@ -27,6 +40,7 @@ def smooth_pitches(pitches: list, time: int) -> list:
     avg_val = None
     min_count = 2
     count = 0
+
     for num in pitches:
         num = int(num)
         if num < 1:
@@ -51,17 +65,17 @@ def smooth_pitches(pitches: list, time: int) -> list:
 
 def get_pitches(filename: str) -> list:
     downsample = 1
-    samplerate = int(44100/downsample)
+    samplerate = 44100//downsample
 
-    win_s = int(4096/downsample)
-    hop_s = int(4096/downsample)
+    win_s = 4096//downsample
+    hop_s = 512//downsample
 
     s = aubio.source(filename, samplerate, hop_s)
     samplerate = s.samplerate
 
     tolerance = 0.8
     pitch_o = aubio.pitch("yin", win_s, hop_s, samplerate)
-    pitch_o.set_unit("midi")
+    pitch_o.set_unit("freq")
     pitch_o.set_tolerance(tolerance)
 
     pitches = []
@@ -77,7 +91,7 @@ def get_pitches(filename: str) -> list:
         confidences += [confidence]
         total_frames += read
         if read < hop_s: break
-    return smooth_pitches(pitches, 0)
+    return pitches
 
 
 def write_file(lst):
@@ -91,7 +105,6 @@ def main(filepath: str):
     print(filepath)
     print(os.getcwd())
     pitch_list = get_pitches(filepath)
-    write_file(pitch_list)
     pass
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 from PIL import Image
-from ocgen.note import Note
+import note
 import sys
 import math
 
@@ -15,14 +15,14 @@ def get_tabs_size(notes: list):
 
 def construct_tabs(notes: list):
     size_tuple = get_tabs_size(notes)
-    new_image = Image.new('RGB', size_tuple)
+    new_image = Image.new('RGB', size_tuple, color="e1f1f1")
     count = 0
     x_pos = 0
     y_pos = 0
     for note in notes:
         count += 1
         # colour = e1f1f1
-        tab = get_image_12_hole(note)
+        tab = get_image_12_hole(note[2])
         new_image.paste(tab, get_note_box(x_pos, y_pos))
         print(str(count))
         x_pos += X_CONST
@@ -30,7 +30,16 @@ def construct_tabs(notes: list):
             y_pos += Y_CONST
             x_pos = 0
             count = 0
+        if type("str") == str:
+            pass
     return new_image
+
+
+def construct_notes(pitch_list):
+    freq_list = []
+    for pitch in pitch_list:
+        freq_list.append(note.find_closest_note(pitch))
+    return freq_list
 
 
 def overlay_notes_12_hole(notes: list):

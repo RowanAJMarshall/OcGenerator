@@ -9,6 +9,8 @@ import os
 import aubio
 import ocgen
 from note import Note
+import tab_gen
+
 
 
 def extract_onsets(pitches, onset, source, hop_s=512//2):
@@ -29,7 +31,7 @@ def filter_pitches(downsample, pitches):
 
 
 def in_bounds(avg_val, num):
-    bounds = 2
+    bounds = 25
     if num > avg_val + bounds or num < avg_val - bounds:
         return False
     return True
@@ -38,7 +40,7 @@ def in_bounds(avg_val, num):
 def smooth_pitches(pitches: list, time: int) -> list:
     naive_notes = []
     avg_val = None
-    min_count = 2
+    min_count = 20
     count = 0
 
     for num in pitches:
@@ -86,12 +88,13 @@ def get_pitches(filename: str) -> list:
         samples, read = s()
         pitch = pitch_o(samples)[0]
         confidence = pitch_o.get_confidence()
-        print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
+        #print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
         pitches += [pitch]
         confidences += [confidence]
         total_frames += read
         if read < hop_s: break
-    return pitches
+    time = total_frames / float(samplerate)
+    return pitches, time
 
 
 def write_file(lst):
@@ -104,7 +107,13 @@ def write_file(lst):
 def main(filepath: str):
     print(filepath)
     print(os.getcwd())
-    pitch_list = get_pitches(filepath)
+    pitch_list, time = get_pitches(filepath)
+    lst = smooth_pitches(pitch_list, time)
+    for l in lst:
+        print(str(l))
+    lst = tab_gen.construct_notes(lst)
+    img = tab_gen.construct_tabs(lst)
+    img.show()
     pass
 
 if __name__ == "__main__":

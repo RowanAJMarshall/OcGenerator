@@ -29,7 +29,6 @@ def upload_file():
     if file:
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('upload_file',
-                                filename=filename))
+        return render_template("result.html")
     return index()
 

@@ -7,10 +7,8 @@
 import sys
 import os
 import aubio
-import ocgen
-from note import Note
-import tab_gen
-
+import ocgen.tab_gen
+from ocgen import tab_gen
 
 
 def extract_onsets(pitches, onset, source, hop_s=512//2):
@@ -103,6 +101,11 @@ def write_file(lst):
             log.write("\n" + str(l))
 
 
+def write_result(image):
+    image.save("static/result.png")
+    pass
+
+
 # Main entry point to program
 def main(filepath: str):
     print(filepath)
@@ -113,7 +116,9 @@ def main(filepath: str):
         print(str(l))
     lst = tab_gen.construct_notes(lst)
     img = tab_gen.construct_tabs(lst)
+    write_result(img)
     img.show()
+    print("Finished")
     pass
 
 if __name__ == "__main__":

@@ -1,7 +1,9 @@
 from PIL import Image
-import note
+import ocgen.note
 import sys
 import math
+
+from ocgen import note
 
 X_CONST = 129
 Y_CONST = 119
@@ -15,7 +17,7 @@ def get_tabs_size(notes: list):
 
 def construct_tabs(notes: list):
     size_tuple = get_tabs_size(notes)
-    new_image = Image.new('RGB', size_tuple, color="e1f1f1")
+    new_image = Image.new('RGB', size_tuple)#, color="e1f1f1")
     count = 0
     x_pos = 0
     y_pos = 0

@@ -107,11 +107,13 @@ def write_result(image):
     pass
 
 
-def check_format(filepath):
+def check_format(filepath: str):
     if filepath[len(filepath) - 3:] == "wav":
         return "wav"
     if filepath[len(filepath) - 3:] == "mp3":
         return "mp3"
+    if filepath[len(filepath) - 3:] == "ogg":
+        return "ogg"
     return ""
 
 
@@ -119,13 +121,18 @@ def standardise_format(filepath: str):
     if check_format(filepath) == "mp3":
         wav_filename = filepath.replace(".mp3", ".wav")
         pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
-
+        return wav_filename
+    elif check_format(filepath) == "ogg":
+        wav_filename = filepath.replace(".mp3", ".wav")
+        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
+        return wav_filename
+    return filepath
 
 
 
 # Main entry point to program
 def main(filepath: str, start_time=0, end_time=-1):
-    standardise_format(filepath)
+    filepath = standardise_format(filepath)
     pitch_list, time = get_pitches(filepath)
     lst = smooth_pitches(pitch_list, time)
     for l in lst:

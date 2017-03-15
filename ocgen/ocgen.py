@@ -9,6 +9,7 @@ import os
 import aubio
 import ocgen.tab_gen
 from ocgen import tab_gen
+import pydub
 
 
 def extract_onsets(pitches, onset, source, hop_s=512//2):
@@ -106,10 +107,25 @@ def write_result(image):
     pass
 
 
+def check_format(filepath):
+    if filepath[len(filepath) - 3:] == "wav":
+        return "wav"
+    if filepath[len(filepath) - 3:] == "mp3":
+        return "mp3"
+    return ""
+
+
+def standardise_format(filepath: str):
+    if check_format(filepath) == "mp3":
+        wav_filename = filepath.replace(".mp3", ".wav")
+        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
+
+
+
+
 # Main entry point to program
-def main(filepath: str):
-    print(filepath)
-    print(os.getcwd())
+def main(filepath: str, start_time=0, end_time=-1):
+    standardise_format(filepath)
     pitch_list, time = get_pitches(filepath)
     lst = smooth_pitches(pitch_list, time)
     for l in lst:
@@ -117,7 +133,6 @@ def main(filepath: str):
     lst = tab_gen.construct_notes(lst)
     img = tab_gen.construct_tabs(lst)
     write_result(img)
-    img.show()
     print("Finished")
     pass
 

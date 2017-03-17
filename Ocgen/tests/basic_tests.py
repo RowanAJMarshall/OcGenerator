@@ -1,12 +1,12 @@
 import unittest
-import ocgen
+import Ocgen
 
 class BasicTests(unittest.TestCase):
 
-    FILENAME = "ocgen/tests/testdata/music.mp3"
+    FILENAME = "Ocgen/tests/testdata/music.mp3"
 
     def setUp(self):
-        ocgen.main(FILENAME)
+        Ocgen.main(FILENAME)
 
     def tearDown(self):
         pass

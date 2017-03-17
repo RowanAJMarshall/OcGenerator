@@ -1,23 +1,31 @@
+# Written by Rowan Marshall
+# Licensed under the MIT License (https://opensource.org/licenses/MIT)
+#
+# OcGenerator - Your go-to tool for ocarina tablature generation!
+#
+# This file contains code to construct tabs out of a given set of pitches
+
 from PIL import Image
-import ocgen.note
 import sys
 import math
 
-from ocgen import note
+from Ocgen import note
 
 X_CONST = 129
 Y_CONST = 119
 IMAGES_PER_LINE = 10
 
-def get_tabs_size(notes: list):
-    x = 10 * X_CONST #len(notes) * X_CONST
+
+# Returns the x and y pixel size of the generated tabs, based on number of notes
+def get_tabs_size(notes: list) -> tuple:
+    x = 10 * X_CONST
     y = math.ceil(len(notes)/IMAGES_PER_LINE) * Y_CONST
     return x, y
 
 
 def construct_tabs(notes: list):
     size_tuple = get_tabs_size(notes)
-    new_image = Image.new('RGB', size_tuple)#, color="e1f1f1")
+    new_image = Image.new('RGB', size_tuple, color=(225,241,241))
     count = 0
     x_pos = 0
     y_pos = 0

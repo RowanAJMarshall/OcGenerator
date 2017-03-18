@@ -3,12 +3,26 @@
 #main {
     text-align: center;
     margin: auto;
-    height: 100%;
+    margin-top: 15%;
+    height: 50%;
     width: 60rem;
-    display: flex;
+    display: block;
     flex-direction: column;
     justify-content: center;
+    font-family: "Helvetica";
     
+}
+
+#advanced-settings {
+    width: 30rem;
+    margin: auto;
+}
+
+#left-column {
+    text-align: left;
+}
+
+#right-column {
     
 }
 
@@ -26,12 +40,21 @@
 #subtitle {
     font-size: 16pt;
     font-family: "Helvetica"
-    
 }
 
 #menu-bar {
     text-align: right;
-    font-size: 16pt;
+    font-size: 14pt;
     font-family: "Helvetica"
     
+}
+
+#css-animation {
+    animation-name: advanced;
+    animation-duration: 4s;
+}
+
+@keyframes advanced {
+    from {height: 0px;}
+    to {height: 100px;}
 }

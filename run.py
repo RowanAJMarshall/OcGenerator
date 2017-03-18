@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import os
-from ocgen import ocgen
+from Ocgen import ocgen
 
 
 app = Flask(__name__)
 app.secret_key = "42"
 app.config['DEBUG'] = True
+
 
 @app.route('/', methods=["GET"])
 def index(filename=None):
@@ -23,8 +24,12 @@ def upload_file():
         return redirect(request.url)
 
     file = request.files['upload']
+    start = request.form['start']
+    end = request.form['end']
+    print("Start " + str(start))
+    print("End " + str(end))
+    print(request.form)
     filename = file.filename
-    
 
     if file:
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))

@@ -15,16 +15,41 @@
             Your go-to tool for ocarina tablature generation!
         </p>
             <form enctype="multipart/form-data" action="/" method="post">
-                <input type="radio" name="format" value="MP3" checked> .MP3 |
-                <input type="radio" name="format" value="WAV"> .WAV |
-                <input type="radio" name="format" value="MIDI" checked> .MIDI
+                Supported formats:
+                mp3 |
+                wav |
+                ogg
                 <br><br>
                 <input type="file" name="upload" value="upload">
                 <input type="submit" value="Submit">
+                <br><br>
+
+                
+                <details id="advanced-settings">
+                    <summary>Advanced Settings</summary>
+                    <br>
+                    <div>
+                        Start at 
+                    <input name="start" type="number" min="0" style="width: 3em;">
+                        &nbsp; &nbsp; 
+                        End at
+                    <input name="end" type="number" min="0" style="width: 3em;">
+                        <br><br>
+                    Ocarina type: &nbsp;&nbsp;
+                    <select name="ocarina-holes">
+                        <option value="4-hole">4-Hole</option>
+                        <option value="6-hole">6-Hole</option>
+                        <option value="10-hole">10-Hole</option>
+                        <option value="11-hole">11-Hole</option>
+                        <option value="12-hole">12-Hole</option>
+                    </select>
+                    </div>
+                    
+                </details>
             </form>
-            <audio controls> 
-                <source src="{{ url_for('static', filename='upload.mp3') }}" type="audio/mp3">
-            </audio>
+
+            <br>
+            
         </section>
     </main>
 </body>

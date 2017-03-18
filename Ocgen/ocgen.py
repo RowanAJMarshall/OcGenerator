@@ -6,16 +6,17 @@
 # This file contains code/functions to extract pitches and notes from a music file
 
 import sys
-import os
+
 import aubio
-from Ocgen import tab_gen
 import pydub
-#import tab_gen
+
+from Ocgen import tab_gen
+from utils import config
 
 
 # Checks if a value is within a set bound
 def in_bounds(avg_val: int, num: int) -> bool:
-    bounds = 25
+    bounds = config.conf['bounds']
     if num > avg_val + bounds or num < avg_val - bounds:
         return False
     return True
@@ -23,10 +24,10 @@ def in_bounds(avg_val: int, num: int) -> bool:
 
 # Collects pitches together and extract distinct notes
 # Kind of a roll-your-own onset detection
-def smooth_pitches(pitches: list, time: int) -> list:
+def smooth_pitches(pitches: list) -> list:
     naive_notes = []
     avg_val = None
-    min_count = 20
+    min_count = config.conf['min_count']
     count = 0
 
     for num in pitches:
@@ -124,7 +125,7 @@ def standardise_format(filepath: str) -> str:
 def main(filepath: str, start_time=0, end_time=-1):
     filepath = standardise_format(filepath)
     pitch_list, time = get_pitches(filepath)
-    lst = smooth_pitches(pitch_list, time)
+    lst = smooth_pitches(pitch_list)
     for l in lst:
         print(str(l))
     lst = tab_gen.construct_notes(lst)
@@ -135,6 +136,7 @@ def main(filepath: str, start_time=0, end_time=-1):
 # Ensure arguments are passed when called as command-line app
 if __name__ == "__main__":
     if len(sys.argv) > 1:
+        config.setup_main_config()
         main(sys.argv[1])
     else:
         print("Please give a filename")

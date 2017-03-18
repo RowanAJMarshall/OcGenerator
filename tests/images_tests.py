@@ -1,12 +1,12 @@
 import unittest
-from ocgen import ocgen
-from ocgen import tab_gen
-from ocgen.note import Note
+from Ocgen import ocgen
+from Ocgen import tab_gen
+from Ocgen.note import Note
 import os
 
 class BasicTests(unittest.TestCase):
 
-    FILENAME = "ocgen/tests/testdata/music.mp3"
+    FILENAME = "Ocgen/tests/testdata/music.mp3"
 
     def setUp(self):
        pass

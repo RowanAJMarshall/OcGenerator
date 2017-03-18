@@ -31,7 +31,6 @@ def construct_tabs(notes: list):
     y_pos = 0
     for note in notes:
         count += 1
-        # colour = e1f1f1
         tab = get_image_12_hole(note[2])
         new_image.paste(tab, get_note_box(x_pos, y_pos))
         print(str(count))
@@ -50,14 +49,6 @@ def construct_notes(pitch_list):
     for pitch in pitch_list:
         freq_list.append(note.find_closest_note(pitch))
     return freq_list
-
-
-def overlay_notes_12_hole(notes: list):
-    num_of_notes = 21
-    max_note, min_note = get_max_min_notes(notes)
-    note_range = max_note - min_note
-    pitch_per_note = note_range // num_of_notes
-    points = []
 
 
 def get_max_min_notes(notes: list):
@@ -82,16 +73,12 @@ def pitch_to_note_transform(pitches):
             max_note = pitch
     
 
-
-def create_tabs(notes: list):
-    max, min = get_max_min_notes(notes)
-    overlay = overlay_notes(notes)
-
-
+# Returns a square image extracted fom a sprite sheet of ocarina notes
 def get_note_box(x_val, y_val):
     return x_val, y_val, x_val + X_CONST, y_val + Y_CONST
     
 
+# Retrieves the note image represented by num, extracted from a sprite sheet
 def get_image_12_hole(num: int):
     if num > 21 or num < 0:
         raise ValueError("Number must be between 0 and 20")

@@ -16,4 +16,9 @@ def find_closest_note(note):
     return min(notes, key=lambda x: abs(float(x[1]) - note))
 
 
+all_notes = [i for i in range(0, 128)]
+notes_12_hole = [(index+1, k) for index, k in enumerate(range(69, 91))]
+
+
+
 

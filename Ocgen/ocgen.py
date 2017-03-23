@@ -11,7 +11,7 @@ import aubio
 import pydub
 
 from Ocgen import tab_gen
-from utils import config
+from Utils import config
 
 
 # Checks if a value is within a set bound
@@ -57,7 +57,6 @@ def get_pitches(filename: str, start=0, end=sys.maxsize) -> list:
     # Downsampling inactive at the moment
     downsample = 1
     samplerate = 44100//downsample
-
     win_s = 4096//downsample
     hop_s = 512//downsample
 
@@ -72,23 +71,30 @@ def get_pitches(filename: str, start=0, end=sys.maxsize) -> list:
 
     pitches = []
     confidences = []
+    times = []
     total_frames = 0
     # Loop over and store all pitches
     while True:
+        time_s = total_frames / float(samplerate)
         samples, read = s()
-        if read/float(samplerate) < start:
-            continue
-        elif read/float(samplerate) > end:
-            break
         pitch = pitch_o(samples)[0]
         confidence = pitch_o.get_confidence()
-        # print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
-        pitches += [pitch]
         confidences += [confidence]
         total_frames += read
+
+        if time_s < start:
+            continue
+        elif time_s > end:
+            break
+
         if read < hop_s: break
+        print("%f %f %f" % (time_s, pitch, confidence))
+        pitches += [pitch]
+        times += [time_s]
+
     time = total_frames / float(samplerate)
-    return pitches, time
+    print(len(pitches))
+    return pitches, times
 
 
 def write_result(image):
@@ -120,23 +126,60 @@ def standardise_format(filepath: str) -> str:
         return wav_filename
     return filepath
 
+def get_notes(filename):
+    downsample = 1
+    samplerate = 44100 // downsample
+    if len( sys.argv ) > 2: samplerate = int(sys.argv[2])
+
+    win_s = 512 // downsample # fft size
+    hop_s = 256 // downsample # hop size
+
+    s = aubio.source(filename, samplerate, hop_s)
+    samplerate = s.samplerate
+
+    tolerance = 0.8
+
+    notes_o = aubio.notes("default", win_s, hop_s, samplerate)
+    note_list = []
+
+    print("%8s" % "time","[ start","vel","last ]")
+
+    # total number of frames read
+    total_frames = 0
+    while True:
+        samples, read = s()
+        new_note = notes_o(samples)
+        if (new_note[0] != 0):
+            note_str = ' '.join(["%.2f" % i for i in new_note])
+            note_list.append(new_note[0])
+            print("%.6f" % (total_frames/float(samplerate)), new_note)
+        total_frames += read
+        if read < hop_s: break
+    return note_list
+
+
+
 
 # Main entry point to program
 def main(filepath: str, start_time=0, end_time=-1):
+    config.setup_main_config()
     filepath = standardise_format(filepath)
-    pitch_list, time = get_pitches(filepath)
+    pitch_list, times = get_pitches(filepath)
     lst = smooth_pitches(pitch_list)
-    for l in lst:
-        print(str(l))
+    # lst = get_notes(filepath)
+    # new_list = []
+    # for i in lst:
+    #     new_list.append(aubio.miditofreq(i))
     lst = tab_gen.construct_notes(lst)
     img = tab_gen.construct_tabs(lst)
+    img.show()
     write_result(img)
 
 
 # Ensure arguments are passed when called as command-line app
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        config.setup_main_config()
+
         main(sys.argv[1])
     else:
         print("Please give a filename")

@@ -11,15 +11,19 @@ import math
 
 from Ocgen import note
 
-X_CONST = 129
-Y_CONST = 119
-IMAGES_PER_LINE = 10
+X_CONST_12 = 129
+Y_CONST_12 = 119
+IMAGES_PER_LINE_12 = 11
+
+X_CONST_6 = 106
+Y_CONST_6 = 137
+IMAGES_PER_LINE_6 = 16
 
 
 # Returns the x and y pixel size of the generated tabs, based on number of notes
 def get_tabs_size(notes: list) -> tuple:
-    x = 10 * X_CONST
-    y = math.ceil(len(notes)/IMAGES_PER_LINE) * Y_CONST
+    x = 10 * X_CONST_12
+    y = math.ceil(len(notes) / IMAGES_PER_LINE_12) * Y_CONST_12
     return x, y
 
 
@@ -32,11 +36,10 @@ def construct_tabs(notes: list):
     for note in notes:
         count += 1
         tab = get_image_12_hole(note[2])
-        new_image.paste(tab, get_note_box(x_pos, y_pos))
-        print(str(count))
-        x_pos += X_CONST
+        new_image.paste(tab, get_note_box_12_hole(x_pos, y_pos))
+        x_pos += X_CONST_12
         if count == 10:
-            y_pos += Y_CONST
+            y_pos += Y_CONST_12
             x_pos = 0
             count = 0
         if type("str") == str:
@@ -74,8 +77,30 @@ def pitch_to_note_transform(pitches):
     
 
 # Returns a square image extracted fom a sprite sheet of ocarina notes
-def get_note_box(x_val, y_val):
-    return x_val, y_val, x_val + X_CONST, y_val + Y_CONST
+def get_note_box_12_hole(x_val, y_val):
+    return x_val, y_val, x_val + X_CONST_12, y_val + Y_CONST_12
+
+
+def get_note_box_6_hole(x_val, y_val):
+    return x_val, y_val, x_val + X_CONST_6, y_val + Y_CONST_6
+
+
+def get_image_6_hole(num: int):
+    if num > 17 or num < 0:
+        raise ValueError("Number must be between 0 and 17")
+    x_val = 0
+    if num > 11:
+        y_val = Y_CONST_6
+        num -= 11
+    else:
+        y_val = 0
+
+    for i in range(1, num):
+        x_val += X_CONST_6
+
+    img = Image.open("images/6_hole.png")
+    box = get_note_box_12_hole(x_val, y_val)
+    return img.crop(box)
     
 
 # Retrieves the note image represented by num, extracted from a sprite sheet
@@ -84,16 +109,16 @@ def get_image_12_hole(num: int):
         raise ValueError("Number must be between 0 and 20")
     x_val = 0
     if num > 11:
-        y_val = 119
+        y_val = Y_CONST_12
         num -= 11
     else:
         y_val = 0
 
     for i in range(1, num):
-        x_val += X_CONST
+        x_val += X_CONST_12
 
-    img = Image.open("images/ocarinanotes.png")
-    box = get_note_box(x_val, y_val)
+    img = Image.open("images/12_hole.png")
+    box = get_note_box_12_hole(x_val, y_val)
     return img.crop(box)
 
 

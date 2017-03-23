@@ -1,7 +1,7 @@
 import unittest
 
 from Ocgen import ocgen
-from utils import config
+from Utils import config
 
 
 class OcgenTests(unittest.TestCase):
@@ -11,6 +11,11 @@ class OcgenTests(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_time_restriction(self):
+        start = 3
+        end = 8
+        pitches = ocgen.get_pitches('music/ocarina.wav', start, end)
 
     def test_in_bounds_lower_bound(self):
         self.assertTrue(ocgen.in_bounds(9, 7))
@@ -43,3 +48,4 @@ class OcgenTests(unittest.TestCase):
             if item != list2[index]:
                 error = "Item {} is different: {} and {}, {} and {}".format(index, item.pitch, list2[index].pitch, item.pitch_num, list2[index].pitch_num)
                 self.fail(error)
+

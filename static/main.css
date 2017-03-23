@@ -49,6 +49,10 @@
     
 }
 
+.time_input {
+    width: 5em;
+}
+
 #css-animation {
     animation-name: advanced;
     animation-duration: 4s;

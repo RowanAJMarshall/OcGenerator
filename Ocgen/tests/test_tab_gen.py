@@ -15,3 +15,8 @@ class TabGenTests(unittest.TestCase):
         box = tab_gen.get_note_box_12_hole(0, 0)
         real_box = (0, 0, 129, 119)
         self.assertEqual(real_box, box)
+
+    def test_construct_notes(self):
+        pitches = [440, 740, 1320, 1171]
+        actual = [("A", 440, 1), ("F\#", 739.99, 10), ("E", 1318.51, 20), ("D", 1174.66, 18)]
+        self.assertEqual(tab_gen.construct_notes(pitches), actual)

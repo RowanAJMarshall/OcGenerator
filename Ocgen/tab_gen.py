@@ -27,6 +27,7 @@ def get_tabs_size(notes: list) -> tuple:
     return x, y
 
 
+# Given a list of frequencies, constructs a new tab image
 def construct_tabs(notes: list):
     size_tuple = get_tabs_size(notes)
     new_image = Image.new('RGB', size_tuple, color=(225,241,241))
@@ -47,10 +48,11 @@ def construct_tabs(notes: list):
     return new_image
 
 
-def construct_notes(pitch_list):
+# Constructs a note list based on the closest frequencies
+def construct_notes(pitch_list, shift=0):
     freq_list = []
     for pitch in pitch_list:
-        freq_list.append(note.find_closest_note(pitch))
+        freq_list.append(note.find_closest_note(pitch, shift=shift))
     return freq_list
 
 

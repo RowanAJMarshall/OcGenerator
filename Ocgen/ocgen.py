@@ -164,7 +164,10 @@ def get_notes(filename):
 def main(filepath: str, start_time=0, end_time=-1):
     config.setup_main_config()
     filepath = standardise_format(filepath)
-    pitch_list, times = get_pitches(filepath)
+    try:
+        pitch_list, times = get_pitches(filepath)
+    except RuntimeError:
+        return False
     lst = smooth_pitches(pitch_list)
     # lst = get_notes(filepath)
     # new_list = []
@@ -174,6 +177,7 @@ def main(filepath: str, start_time=0, end_time=-1):
     img = tab_gen.construct_tabs(lst)
     img.show()
     write_result(img)
+    return True
 
 
 # Ensure arguments are passed when called as command-line app

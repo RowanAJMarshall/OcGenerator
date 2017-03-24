@@ -39,19 +39,25 @@
 
 #subtitle {
     font-size: 16pt;
-    font-family: "Helvetica"
+    font-family: "Helvetica";
 }
 
 #menu-bar {
     text-align: right;
     font-size: 14pt;
-    font-family: "Helvetica"
+    font-family: "Helvetica";
     
+}
+
+#error {
+    color: red;
 }
 
 .time_input {
     width: 5em;
 }
+
+
 
 #css-animation {
     animation-name: advanced;

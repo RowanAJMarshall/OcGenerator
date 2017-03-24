@@ -33,7 +33,13 @@ def upload_file():
 
     if file:
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template("result.html")
+        result = ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return render_template('index.html', result=result)
     return index()
+
+
+def get_result(result):
+    if result: return render_template("result.html")
+    else: return render_template('index.html', result=True)
+
 

@@ -47,6 +47,15 @@
                     
                 </details>
             </form>
+            {% if result is defined %}
+                {% if result %}
+                    <img src="{{ url_for('static', filename='result.png') }}">
+                {% else %}
+                <script>
+                    window.alert("Error while processing file.");
+                </script>
+                {% endif %}
+            {% endif %}
 
             <br>
             

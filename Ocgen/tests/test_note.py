@@ -31,6 +31,14 @@ class NoteTests(unittest.TestCase):
 
         self.assertTrue(equal(normal, downshifted))
 
+    def test_get_shift_upshift(self):
+        freqs = [400, 450]
+        self.assertEquals(-1, note.get_shift(freqs))
+
+    def test_get_shift_downshift(self):
+        freqs = [1350, 1400]
+        self.assertEquals(1, note.get_shift(freqs))
+
 
 def equal(im1, im2):
     return ImageChops.difference(im1, im2).getbbox() is None

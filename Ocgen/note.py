@@ -12,12 +12,48 @@ class Note:
         self.pitch_num = pitch_num
 
 
+class NotEnoughRangeError(Exception):
+    pass
+
+
 def get_12_hole_notes():
     # [(Note, Frequency, Integer representation)]
     return [["A", 440, 1], ["A\#", 466.16, 2], ["B", 493.88, 3], ["C", 523.25, 4], ["C\#", 554.37, 5], ["D", 587.33, 6],
            ["D\#", 622.25, 7], ["E", 659.26, 8], ["F", 698.46, 9], ["F\#", 739.99, 10], ["G", 783.99, 11],
            ["G#", 830.61, 12], ["A", 880, 13], ["A\#", 932.33, 14], ["B", 987.77, 15], ["C", 1046.5, 16],
            ["C\#", 1108.73, 17], ["D", 1174.66, 18], ["D\#", 1244.51, 19], ["E", 1318.51, 20], ["F", 1396.91, 21]]
+
+
+def get_shift(pitches, shift_num=0, ref_list=[i[1] for i in get_12_hole_notes()]):
+    # Lowest current frequency
+    lowest = min(shift(ref_list))
+
+    # Highest current frequency
+    highest = max(shift(ref_list))
+
+    minimum_freq = min(k for k in pitches)
+    maximum_freq = max(k for k in pitches)
+
+    too_low = minimum_freq < lowest
+    too_high = maximum_freq > highest
+
+    if (too_low and too_high) or (shift_num < 0 and too_high) or (shift_num > 0 and too_low):
+        raise NotEnoughRangeError
+    elif too_low:
+        return get_shift(pitches, shift_num - 1, downshift(ref_list, -1))
+    elif too_high:
+        return get_shift(pitches, shift_num + 1, upshift(ref_list, 1))
+    return shift_num
+
+
+def shift(lst, shift_num=0):
+    if shift_num < 0:
+        return downshift(lst, shift_num)
+    if shift_num > 0:
+        return upshift(lst, shift_num)
+    return lst
+
+
 
 
 def find_closest_note1(note):
@@ -41,17 +77,17 @@ def find_closest_note(note, shift=0):
     return prev
 
 
-def upshift(note_list: list, shift):
-    upshift_factor = 2 ** shift
+def upshift(note_list: list, shift_num):
+    upshift_factor = 2 ** shift_num
     for index, n in enumerate(note_list):
-        note_list[index][1] *= upshift_factor
+        note_list[index] *= upshift_factor
     return note_list
 
 
-def downshift(note_list: list, shift):
-    downshift_factor = 2 ** abs(shift)
+def downshift(note_list: list, shift_num):
+    downshift_factor = 2 ** abs(shift_num)
     for index, n in enumerate(note_list):
-        note_list[index][1] /= downshift_factor
+        note_list[index] /= downshift_factor
     return note_list
 
 

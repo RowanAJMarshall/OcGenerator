@@ -4,6 +4,7 @@
 # OcGenerator - Your go-to tool for ocarina tablature generation!
 #
 #
+import copy
 
 
 class Note:
@@ -40,9 +41,9 @@ def get_shift(pitches, shift_num=0, ref_list=[i[1] for i in get_12_hole_notes()]
     if (too_low and too_high) or (shift_num < 0 and too_high) or (shift_num > 0 and too_low):
         raise NotEnoughRangeError
     elif too_low:
-        return get_shift(pitches, shift_num - 1, downshift(ref_list, -1))
+        return get_shift(pitches, shift_num - 1, shift(ref_list, -1))
     elif too_high:
-        return get_shift(pitches, shift_num + 1, upshift(ref_list, 1))
+        return get_shift(pitches, shift_num + 1, shift(ref_list, 1))
     return shift_num
 
 
@@ -54,19 +55,16 @@ def shift(lst, shift_num=0):
     return lst
 
 
-
-
 def find_closest_note1(note):
     return min(get_12_hole_notes(), key=lambda x: abs(float(x[1]) - note))
 
 
-def find_closest_note(note, shift=0):
-    notes = get_12_hole_notes()
-    if shift > 0: notes = upshift(notes, shift)
-    elif shift < 0: notes = downshift(notes, shift)
+def find_closest_note(note: float, ref_notes, shift_amount=0):
 
-    prev = notes[0]
-    for index, n in enumerate(notes):
+    ref_notes = shift(ref_notes, shift_amount)
+
+    prev = ref_notes[0]
+    for index, n in enumerate(ref_notes):
         if note == n[1]:
             return n
         elif note > n[1]:
@@ -78,17 +76,39 @@ def find_closest_note(note, shift=0):
 
 
 def upshift(note_list: list, shift_num):
+    note_list = copy.deepcopy(note_list)
     upshift_factor = 2 ** shift_num
-    for index, n in enumerate(note_list):
-        note_list[index] *= upshift_factor
+    if type(note_list[0]) == list:
+        for index, n in enumerate(note_list):
+            note_list[index][1] *= upshift_factor
+    else:
+        for index, n in enumerate(note_list):
+            note_list[index] *= upshift_factor
     return note_list
+
+    # note_list = list(note_list)
+    # upshift_factor = 2 ** shift_num
+    # for index, n in enumerate(note_list):
+    #     note_list[index][1] *= upshift_factor
+    # return note_list
 
 
 def downshift(note_list: list, shift_num):
+    note_list = copy.deepcopy(note_list)
     downshift_factor = 2 ** abs(shift_num)
-    for index, n in enumerate(note_list):
-        note_list[index] /= downshift_factor
+    if type(note_list[0]) == list:
+        for index, n in enumerate(note_list):
+            note_list[index][1] /= downshift_factor
+    else:
+        for index, n in enumerate(note_list):
+            note_list[index] /= downshift_factor
     return note_list
+
+    # note_list = list(note_list)
+    # downshift_factor = 2 ** abs(shift_num)
+    # for index, n in enumerate(note_list):
+    #     note_list[index][1] /= downshift_factor
+    # return note_list
 
 
 

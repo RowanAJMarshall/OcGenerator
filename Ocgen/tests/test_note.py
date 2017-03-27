@@ -11,8 +11,8 @@ class NoteTests(unittest.TestCase):
         up_freqs = [880, 932, 2636, 2800]
         normal_freqs = [440, 466, 1318, 1400]
 
-        up_notes = tab_gen.construct_notes(up_freqs, shift=1)
-        normal_notes = tab_gen.construct_notes(normal_freqs)
+        up_notes = tab_gen.construct_notes(up_freqs, note.get_12_hole_notes(), 1)
+        normal_notes = tab_gen.construct_notes(normal_freqs, note.get_12_hole_notes(), 0)
 
         normal = tab_gen.construct_tabs(normal_notes)
         upshifted = tab_gen.construct_tabs(up_notes)
@@ -23,8 +23,8 @@ class NoteTests(unittest.TestCase):
         down_freqs = [220, 233, 659, 700]
         normal_freqs = [440, 466, 1318, 1400]
 
-        down_notes = tab_gen.construct_notes(down_freqs, shift=-1)
-        normal_notes = tab_gen.construct_notes(normal_freqs)
+        down_notes = tab_gen.construct_notes(down_freqs, note.get_12_hole_notes(), -1)
+        normal_notes = tab_gen.construct_notes(normal_freqs,note.get_12_hole_notes(), 0)
 
         normal = tab_gen.construct_tabs(normal_notes)
         downshifted = tab_gen.construct_tabs(down_notes)

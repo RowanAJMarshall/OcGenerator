@@ -28,7 +28,7 @@ def get_12_hole_notes():
 
 
 # Gets the octave shift required, if any
-def get_shift(pitches: list, shift_num=0, ref_list=[i[1] for i in get_12_hole_notes()]):
+def get_shift(pitches: list, shift_num=0, ref_list=0):
     # Lowest current frequency
     lowest = min(shift(ref_list))
 

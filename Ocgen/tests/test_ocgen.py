@@ -36,9 +36,9 @@ class OcgenTests(unittest.TestCase):
         self.assertEqual("", ocgen.check_format("music.pdf"))
 
     def test_pitch_smoothing(self):
-        pitches = [0, 0, 0, 0, 35, 35, 37, 9, 7, 8, 8, 0]
+        pitches = [0, 0, 0, 0, 160, 162, 161, 59, 57, 58, 58, 0]
         smoothed_pitches = ocgen.smooth_pitches(pitches)
-        self.assert_note_lists_equal(smoothed_pitches, [36, 8])
+        self.assert_note_lists_equal(smoothed_pitches, [161, 58])
 
     def assert_note_lists_equal(self, list1, list2):
         if len(list1) != len(list2):
@@ -46,6 +46,6 @@ class OcgenTests(unittest.TestCase):
 
         for index, item in enumerate(list1):
             if item != list2[index]:
-                error = "Item {} is different: {} and {}, {} and {}".format(index, item.pitch, list2[index].pitch, item.pitch_num, list2[index].pitch_num)
+                error = "Item {} is different: {} and {}".format(index, item, list2[index])
                 self.fail(error)
 

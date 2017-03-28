@@ -1,0 +1,104 @@
+import abc
+import math
+
+from PIL import Image
+
+
+class Instrument(object, metaclass=abc.ABCMeta):
+    X_CONST = None
+    Y_CONST = None
+    IMAGES_PER_SPRITE_SHEET_LINE = None
+
+
+    @abc.abstractmethod
+    def get_notes(self):
+        raise NotImplementedError("You must define get_notes to use this base class")
+
+    @abc.abstractmethod
+    def get_tabs_size(self, notes: list) -> tuple:
+        raise NotImplementedError("You must define get_tabs_size to use this base class")
+
+    @abc.abstractmethod
+    def get_note_box(self, x_val, y_val):
+        raise NotImplementedError("You must define get_note_box to use this base class")
+
+    @abc.abstractmethod
+    def construct_tabs(self, notes):
+        raise NotImplementedError("You must define construct_tabs to use this base class")
+
+    @abc.abstractmethod
+    def get_image(self, num):
+        raise NotImplementedError("You must define get_image to use this base class")
+
+
+class TwelveHoleOcarina(Instrument):
+    X_CONST = 129
+    Y_CONST = 119
+    IMAGES_PER_SPRITE_SHEET_LINE = 11
+    SPRITE_SHEET = 'images/12_hole.png'
+
+    def __init__(self):
+        pass
+
+    def get_notes(self):
+        return [["A", 440, 1], ["A\#", 466.16, 2], ["B", 493.88, 3], ["C", 523.25, 4], ["C\#", 554.37, 5],
+                ["D", 587.33, 6],
+                ["D\#", 622.25, 7], ["E", 659.26, 8], ["F", 698.46, 9], ["F\#", 739.99, 10], ["G", 783.99, 11],
+                ["G#", 830.61, 12], ["A", 880, 13], ["A\#", 932.33, 14], ["B", 987.77, 15], ["C", 1046.5, 16],
+                ["C\#", 1108.73, 17], ["D", 1174.66, 18], ["D\#", 1244.51, 19], ["E", 1318.51, 20], ["F", 1396.91, 21]]
+
+    # Returns the x and y pixel size of the generated tabs, based on number of notes
+    def get_tabs_size(self, notes: list) -> tuple:
+        x = 10 * self.X_CONST
+        y = math.ceil(len(notes) / self.IMAGES_PER_SPRITE_SHEET_LINE) * self.Y_CONST
+        return x, y
+
+    def get_note_box(self, x_val, y_val):
+        return x_val, y_val, x_val + self.X_CONST, y_val + self.Y_CONST
+
+    def construct_tabs(self, notes: list):
+        size_tuple = self.get_tabs_size(notes)
+        new_image = Image.new('RGB', size_tuple, color=(225, 241, 241))
+        count = 0
+        x_pos = 0
+        y_pos = 0
+        for note in notes:
+            count += 1
+            tab = self.get_image(note[2])
+            new_image.paste(tab, self.get_note_box(x_pos, y_pos))
+            x_pos += self.X_CONST
+            if count == 10:
+                y_pos += self.Y_CONST
+                x_pos = 0
+                count = 0
+            if type("str") == str:
+                pass
+        return new_image
+
+    # Retrieves the note image represented by num, extracted from a sprite sheet
+    def get_image(self, num: int):
+        if num > 21 or num < 0:
+            raise ValueError("Number must be between 0 and 20")
+        x_val = 0
+        if num > self.IMAGES_PER_SPRITE_SHEET_LINE:
+            y_val = self.Y_CONST
+            num -= self.IMAGES_PER_SPRITE_SHEET_LINE
+        else:
+            y_val = 0
+
+        for i in range(1, num):
+            x_val += self.X_CONST
+
+        img = Image.open(self.SPRITE_SHEET)
+        box = self.get_note_box(x_val, y_val)
+        return img.crop(box)
+
+
+class SixHoleOcarina(Instrument):
+    pass
+
+
+
+
+
+

@@ -46,13 +46,12 @@ class Instrument(object, metaclass=abc.ABCMeta):
     # Retrieves the note image represented by num, extracted from a sprite sheet
     def get_image(self, num: int):
         if num > self.NUM_OF_NOTES or num < 0:
-            raise ValueError("Number must be between 0 and 20")
+            raise ValueError("You entered {}: Number must be between 1 and {}".format(num, self.NUM_OF_NOTES))
         x_val = 0
-        if num > self.IMAGES_PER_SPRITE_SHEET_LINE:
-            y_val = self.Y_CONST
+        y_val = 0
+        while num > self.IMAGES_PER_SPRITE_SHEET_LINE:
+            y_val += self.Y_CONST
             num -= self.IMAGES_PER_SPRITE_SHEET_LINE
-        else:
-            y_val = 0
 
         for i in range(1, num):
             x_val += self.X_CONST
@@ -85,8 +84,27 @@ class TwelveHoleOcarina(Instrument):
 
 
 class SixHoleOcarina(Instrument):
-    pass
+    X_CONST = 122
+    Y_CONST = 84
+    IMAGES_PER_SPRITE_SHEET_LINE = 1
+    IMAGES_PER_LINE_TABS = 10
+    NUM_OF_NOTES = 10
+    SPRITE_SHEET = 'images/6_hole.png'
 
+    def __init__(self):
+        pass
+
+    def get_notes(self):
+        return [["C", 523.25, 1],
+                ["D", 587.33, 2],
+                ["E", 659.26, 3],
+                ["F", 698.46, 4],
+                ["G", 783.99, 5],
+                ["A", 880, 6],
+                ["B", 987.77, 7],
+                ["C", 1046.5, 8],
+                ["D", 1174.66, 9],
+                ["E", 1318.51, 10]]
 
 
 

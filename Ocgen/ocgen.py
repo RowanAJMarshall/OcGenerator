@@ -179,19 +179,19 @@ def main(filepath: str, start_time=0, end_time=-1):
     # for i in lst:
     #     new_list.append(aubio.miditofreq(i))
 
-
+    instrument = None
     s = '12-hole'
     if s == '12-hole':
         instrument = InstrumentDefinitions.TwelveHoleOcarina()
     elif s == '6-hole':
-        instrument == SixHoleOcarina()
+        instrument = InstrumentDefinitions.SixHoleOcarina()
 
-    try:
-        shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
-    except note.NotEnoughRangeError:
-        return False, "The chosen instrument does not have enough range"
+    # try:
+    #     shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
+    # except note.NotEnoughRangeError:
+    #     return False, "The chosen instrument does not have enough range"
 
-    lst = tab_gen.construct_notes(lst, instrument.get_notes(), shift)
+    lst = tab_gen.construct_notes(lst, instrument.get_notes(), 0)
     img = tab_gen.construct_tabs(lst, instrument)
     # lst = tab_gen.construct_notes(lst, note.get_12_hole_notes(), shift)
     # img = tab_gen.construct_tabs(lst)

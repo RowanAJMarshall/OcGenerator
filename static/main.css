@@ -57,14 +57,9 @@
     width: 5em;
 }
 
+#loading {
 
-
-#css-animation {
-    animation-name: advanced;
-    animation-duration: 4s;
 }
 
-@keyframes advanced {
-    from {height: 0px;}
-    to {height: 100px;}
-}
+
+

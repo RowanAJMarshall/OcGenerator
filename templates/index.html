@@ -1,9 +1,16 @@
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='animation.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
+
     <title>OcGenerator</title>
 </head>
 
-<body>
+<body onload="onload()">
+    <script>
+
+    </script>
     <div id="menu-bar">
         About | Legal | <a href="https://github.com/RowanAJMarshall/OcGenerator">Source Code</a>
     </div>
@@ -21,7 +28,7 @@
                 ogg
                 <br><br>
                 <input type="file" name="upload" value="upload">
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit" onclick="ShowLoading()" id="submit">
                 <br><br>
 
                 
@@ -35,26 +42,23 @@
                         End at
                     <input name="end" type="number" min="0" class="time_input">
                         <br><br>
-                    Ocarina type: &nbsp;&nbsp;
+                    Instrument type: &nbsp;&nbsp;
                     <select name="ocarina-holes">
-                        <option value="4-hole">4-Hole</option>
+                        <option value="12-hole" selected="selected">12-Hole</option>
+                        <option value="11-hole" hidden="hidden">11-Hole</option>
+                         <option value="10-hole" hidden="hidden">10-Hole</option>
                         <option value="6-hole">6-Hole</option>
-                        <option value="10-hole">10-Hole</option>
-                        <option value="11-hole">11-Hole</option>
-                        <option value="12-hole">12-Hole</option>
+                        <option value="4-hole" hidden="hidden">4-Hole</option>
                     </select>
                     </div>
                     
                 </details>
+                <img src="http://www.drivethrurpg.com/shared_images/ajax-loader.gif" height="300px" width="300px" id="loading" hidden>
             </form>
-            {% if result is defined %}
-                {% if result %}
-                    <img src="{{ url_for('static', filename='result.png') }}">
-                {% else %}
+            {% if error is defined %}
                 <script>
-                    window.alert("Error while processing file.");
+                    window.alert("{{ error }}");
                 </script>
-                {% endif %}
             {% endif %}
 
             <br>

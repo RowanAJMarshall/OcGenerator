@@ -1,3 +1,10 @@
+# Written by Rowan Marshall
+# Licensed under the MIT License (https://opensource.org/licenses/MIT)
+#
+# OcGenerator - Your go-to tool for ocarina tablature generation!
+#
+# This file contains instrument definitions and the Instrument superclass
+
 import abc
 import math
 
@@ -79,9 +86,6 @@ class TwelveHoleOcarina(Instrument):
                 ["G#", 830.61, 12], ["A", 880, 13], ["A\#", 932.33, 14], ["B", 987.77, 15], ["C", 1046.5, 16],
                 ["C\#", 1108.73, 17], ["D", 1174.66, 18], ["D\#", 1244.51, 19], ["E", 1318.51, 20], ["F", 1396.91, 21]]
 
-    # Returns the x and y pixel size of the generated tabs, based on number of notes
-
-
 
 class SixHoleOcarina(Instrument):
     X_CONST = 122
@@ -105,8 +109,3 @@ class SixHoleOcarina(Instrument):
                 ["C", 1046.5, 8],
                 ["D", 1174.66, 9],
                 ["E", 1318.51, 10]]
-
-
-
-
-

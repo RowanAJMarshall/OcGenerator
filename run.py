@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import os
+
+from flask import send_file
+
 from Ocgen import ocgen
 
 
@@ -17,6 +20,8 @@ def index(filename=None):
 def upload_file():
     UPLOAD_FOLDER = './uploads'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    start = 0
+    end = -1
 
     if "upload" not in request.files:
         print("File not in there")
@@ -33,13 +38,14 @@ def upload_file():
 
     if file:
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        result = ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template('index.html', result=result)
+        result = ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], filename), start, end, request.form['ocarina-holes'])
+        print(str(result))
+        return get_result(result)
     return index()
 
 
 def get_result(result):
-    if result: return render_template("result.html")
-    else: return render_template('index.html', result=True)
+    if result is None: return send_file('/home/roan/Diss/ocgen/app/static/result.png')
+    else: return render_template('index.html', error=result)
 
 

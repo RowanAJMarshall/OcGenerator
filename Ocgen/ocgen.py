@@ -10,14 +10,10 @@ import sys
 import aubio
 import pydub
 
-import InstrumentDefinitions
+from Ocgen import InstrumentDefinitions
 from Ocgen import note
 from Ocgen import tab_gen
 from Utils import config
-
-
-# Checks if a value is within a set bound
-from InstrumentDefinitions import TwelveHoleOcarina
 
 
 def in_bounds(avg_val: int, num: int) -> bool:
@@ -166,13 +162,13 @@ def get_notes(filename):
 
 
 # Main entry point to program
-def main(filepath: str, start_time=0, end_time=-1):
+def main(filepath: str, start_time=0, end_time=-1, instrument_name='12-hole'):
     config.setup_main_config()
     filepath = standardise_format(filepath)
     try:
         pitch_list, times = get_pitches(filepath)
     except RuntimeError:
-        return False, "Something went wrong during transcription"
+        return "Something went wrong during transcription"
     lst = smooth_pitches(pitch_list)
     # lst = get_notes(filepath)
     # new_list = []
@@ -180,25 +176,25 @@ def main(filepath: str, start_time=0, end_time=-1):
     #     new_list.append(aubio.miditofreq(i))
 
     instrument = None
-    s = '12-hole'
-    if s == '12-hole':
+    if instrument_name == '12-hole':
         instrument = InstrumentDefinitions.TwelveHoleOcarina()
-    elif s == '6-hole':
+    elif instrument_name == '6-hole':
         instrument = InstrumentDefinitions.SixHoleOcarina()
 
-    # try:
-    #     shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
-    # except note.NotEnoughRangeError:
-    #     return False, "The chosen instrument does not have enough range"
+    shift = 0
+    try:
+        shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
+    except note.NotEnoughRangeError:
+        return "The chosen instrument does not have enough range"
 
-    lst = tab_gen.construct_notes(lst, instrument.get_notes(), 0)
+    lst = tab_gen.construct_notes(lst, instrument.get_notes(), shift)
     img = tab_gen.construct_tabs(lst, instrument)
     # lst = tab_gen.construct_notes(lst, note.get_12_hole_notes(), shift)
     # img = tab_gen.construct_tabs(lst)
     img.show()
     write_result(img)
     # Hello World!
-    return True
+    return None
 
 
 # Ensure arguments are passed when called as command-line app

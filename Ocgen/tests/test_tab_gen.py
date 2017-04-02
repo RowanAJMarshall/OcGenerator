@@ -1,7 +1,7 @@
 import unittest
 
-import InstrumentDefinitions
-import note
+from Ocgen import InstrumentDefinitions
+from Ocgen import note
 from Ocgen.note import Note
 from Ocgen import tab_gen
 

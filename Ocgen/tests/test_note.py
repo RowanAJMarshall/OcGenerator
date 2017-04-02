@@ -1,8 +1,8 @@
 import unittest
 
-import InstrumentDefinitions
-import note
-import tab_gen
+from Ocgen import InstrumentDefinitions
+from Ocgen import note
+from Ocgen import tab_gen
 from PIL import ImageChops
 
 

@@ -54,7 +54,7 @@ def smooth_pitches(pitches: list) -> list:
     
 
 # Extract pitches from a given music file
-def get_pitches(filename: str, start=0, end=sys.maxsize) -> list:
+def get_pitches(filename: str, start, end, pitch_algorithm) -> list:
     # Downsampling inactive at the moment
     downsample = 1
     samplerate = 44100//downsample
@@ -66,7 +66,7 @@ def get_pitches(filename: str, start=0, end=sys.maxsize) -> list:
 
     tolerance = 0.8
     # Uses Yin pitch detection algorithm
-    pitch_o = aubio.pitch("yin", win_s, hop_s, samplerate)
+    pitch_o = aubio.pitch(pitch_algorithm, win_s, hop_s, samplerate)
     pitch_o.set_unit("freq")
     pitch_o.set_tolerance(tolerance)
 
@@ -162,11 +162,11 @@ def get_notes(filename):
 
 
 # Main entry point to program
-def main(filepath: str, start_time=0, end_time=-1, instrument_name='12-hole'):
+def main(filepath: str, start_time, end_time, instrument_name, pitch_algorithm):
     config.setup_main_config()
     filepath = standardise_format(filepath)
     try:
-        pitch_list, times = get_pitches(filepath)
+        pitch_list, times = get_pitches(filepath, start_time, end_time, pitch_algorithm)
     except RuntimeError:
         return "Something went wrong during transcription"
     lst = smooth_pitches(pitch_list)
@@ -191,7 +191,6 @@ def main(filepath: str, start_time=0, end_time=-1, instrument_name='12-hole'):
     img = tab_gen.construct_tabs(lst, instrument)
     # lst = tab_gen.construct_notes(lst, note.get_12_hole_notes(), shift)
     # img = tab_gen.construct_tabs(lst)
-    img.show()
     write_result(img)
     # Hello World!
     return None

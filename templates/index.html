@@ -3,7 +3,11 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='animation.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
-
+    {% if error is defined %}
+                <script>
+                    window.alert("{{ error }}");
+                </script>
+            {% endif %}
     <title>OcGenerator</title>
 </head>
 
@@ -43,23 +47,30 @@
                     <input name="end" type="number" min="0" class="time_input">
                         <br><br>
                     Instrument type: &nbsp;&nbsp;
-                    <select name="ocarina-holes">
+                    <select name="instrument">
                         <option value="12-hole" selected="selected">12-Hole</option>
                         <option value="11-hole" hidden="hidden">11-Hole</option>
                          <option value="10-hole" hidden="hidden">10-Hole</option>
                         <option value="6-hole">6-Hole</option>
                         <option value="4-hole" hidden="hidden">4-Hole</option>
                     </select>
+                        <br><br>
+                        Pitch detection algorithm: &nbsp;&nbsp;
+                    <select name="pitch-algorithm">
+                        <option value="yin" selected>Yin</option>
+                        <option value="yinfft">Yinfft</option>
+                        <option value="specacf">Spectral auto-correlation</option>
+                        <option value="mcomb">Multiple-comb filter</option>
+                        <option value="fcomb">Fast harmonic comb filter</option>
+                        <option value="schmitt">Schmitt trigger</option>
+                    </select>
                     </div>
                     
                 </details>
-                <img src="http://www.drivethrurpg.com/shared_images/ajax-loader.gif" height="300px" width="300px" id="loading" style="display: none">
+
             </form>
-            {% if error is defined %}
-                <script>
-                    window.alert("{{ error }}");
-                </script>
-            {% endif %}
+            <img src="http://www.drivethrurpg.com/shared_images/ajax-loader.gif" height="300px" width="300px" id="loading" style="display: none">
+
 
             <br>
             

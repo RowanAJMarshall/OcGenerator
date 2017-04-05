@@ -4,11 +4,13 @@
 # OcGenerator - Your go-to tool for ocarina tablature generation!
 #
 # This file contains code/functions to extract pitches and notes from a music file
-
+import hashlib
 import sys
 
 import aubio
 import pydub
+import time
+import os
 
 from Ocgen import InstrumentDefinitions
 from Ocgen import note
@@ -89,43 +91,65 @@ def get_pitches(filename: str, start, end, pitch_algorithm) -> list:
             break
 
         if read < hop_s: break
-        print("%f %f %f" % (time_s, pitch, confidence))
+        # print("%f %f %f" % (time_s, pitch, confidence))
         pitches += [pitch]
         times += [time_s]
 
-    print(len(pitches))
     return pitches, times
 
 
-# Write result to set location
-def write_result(image):
-    image.save("static/result.png")
+def write_result(image, name: str):
+    _, new_filename = seperate_path_and_file(name)
+    image.save("static/" + new_filename.replace(".wav",".png"))
+
+    return new_filename.replace(".wav",".png")
+
+
+def seperate_path_and_file(filepath):
+    slash_encountered = False
+    path = ""
+    filename = ""
+    for char in filepath[::-1]:
+        if char == "/":
+            slash_encountered = True
+            path += char
+        elif not slash_encountered:
+            filename += char
+        else:
+            path += char
+    return path[::-1], filename[::-1]
 
 
 # Checks format of given file, return string representation of format
 # Only checks file extension so far
-def check_format(filepath: str) -> str:
-    if filepath[len(filepath) - 3:] == "wav":
+def check_format(filepath: str, char_num) -> str:
+    if filepath[len(filepath) - char_num:] == "wav":
         return "wav"
-    if filepath[len(filepath) - 3:] == "mp3":
+    if filepath[len(filepath) - char_num:] == "mp3":
         return "mp3"
-    if filepath[len(filepath) - 3:] == "ogg":
+    if filepath[len(filepath) - char_num:] == "ogg":
         return "ogg"
+    if filepath[len(filepath) - char_num:] == "webm":
+        return "webm"
     return ""
 
 
-# Converts mp3 and ogg giles to wav if needed
-# Returns new filepath, post-conversion
 def standardise_format(filepath: str) -> str:
-    if check_format(filepath) == "mp3":
+    if check_format(filepath, 3) == "mp3":
         wav_filename = filepath.replace(".mp3", ".wav")
         pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
         return wav_filename
-    elif check_format(filepath) == "ogg":
-        wav_filename = filepath.replace(".mp3", ".wav")
+    elif check_format(filepath, 3) == "ogg":
+        wav_filename = filepath.replace(".ogg", ".wav")
+        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
+        return wav_filename
+    elif check_format(filepath, 4) == "webm":
+        wav_filename = filepath.replace(".webm", ".wav")
         pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
         return wav_filename
     return filepath
+
+
 
 
 # Uses Aubio to extract notes
@@ -161,6 +185,23 @@ def get_notes(filename):
     return note_list
 
 
+
+
+
+
+
+class NoValidInstrumentException(Exception):
+    pass
+
+
+def get_instrument(instrument_name: str) -> InstrumentDefinitions.Instrument:
+    if instrument_name == '12-hole':
+        return InstrumentDefinitions.TwelveHoleOcarina()
+    elif instrument_name == '6-hole':
+        return InstrumentDefinitions.SixHoleOcarina()
+    raise NoValidInstrumentException
+
+
 # Main entry point to program
 def main(filepath: str, start_time, end_time, instrument_name, pitch_algorithm):
     config.setup_main_config()
@@ -168,39 +209,38 @@ def main(filepath: str, start_time, end_time, instrument_name, pitch_algorithm):
     try:
         pitch_list, times = get_pitches(filepath, start_time, end_time, pitch_algorithm)
     except RuntimeError:
-        return "Something went wrong during transcription"
+        return "Something went wrong during transcription", None
     lst = smooth_pitches(pitch_list)
     # lst = get_notes(filepath)
     # new_list = []
     # for i in lst:
     #     new_list.append(aubio.miditofreq(i))
 
-    instrument = None
-    if instrument_name == '12-hole':
-        instrument = InstrumentDefinitions.TwelveHoleOcarina()
-    elif instrument_name == '6-hole':
-        instrument = InstrumentDefinitions.SixHoleOcarina()
+    instrument = get_instrument(instrument_name)
+
 
     shift = 0
     try:
         shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
     except note.NotEnoughRangeError:
-        return "The chosen instrument does not have enough range"
+        return "The chosen instrument does not have enough range", None
 
     lst = tab_gen.construct_notes(lst, instrument.get_notes(), shift)
     img = tab_gen.construct_tabs(lst, instrument)
     # lst = tab_gen.construct_notes(lst, note.get_12_hole_notes(), shift)
     # img = tab_gen.construct_tabs(lst)
-    write_result(img)
+
+    img_name = write_result(img, filepath)
+
     # Hello World!
-    return None
+    return None, img_name
 
 
 # Ensure arguments are passed when called as command-line app
 if __name__ == "__main__":
     if len(sys.argv) > 1:
 
-        main(sys.argv[1])
+        main(sys.argv[1], 0, sys.maxsize, '12-hole', 'yin')
     else:
         print("Please give a filename")
         exit(0)

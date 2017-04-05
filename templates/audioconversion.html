@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+<head>
+    {% block head %}
+    {% endblock %}
+
+</head>
+
+<body>
+    {% block content %}
+    <main id="main">
+        <h1 id="title">Audio Converter</h1>
+
+
+        <p id="subtitle">
+            Ribbed for your pleasure
+        </p>
+        <form enctype="multipart/form-data" action="/audioconversion" method="post">
+            File: <input type="file" name="upload" value="upload" id="choose-file"><br><br>
+            &nbsp; &nbsp; Convert to:
+            <select name="target-format">
+                 <option value="mp3" selected="selected">MP3</option>
+                 <option value="wav" selected="selected">WAV</option>
+                 <option value="webm" selected="selected">WebM</option>
+                 <option value="ogg" selected="selected">OGG</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Submit" onclick="ShowLoading()" id="submit">
+        </form>
+        {% if converted_file is defined %}
+            <audio controls>
+                <source src="{{ url_for('static', filename=converted_file) }}" type="audio/{{ format }}">
+                Your browser does not support this format.
+            </audio>
+        {% endif %}
+    </main>
+
+    {% endblock %}
+</body>

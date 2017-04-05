@@ -1,23 +1,13 @@
+{% extends 'base.html' %}
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='animation.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
-    {% if error is defined %}
-                <script>
-                    window.alert("{{ error }}");
-                </script>
-            {% endif %}
+    {% block head %}
+
+    {% endblock %}
     <title>OcGenerator</title>
 </head>
 
-<body onload="onload()">
-    <script>
-
-    </script>
-    <div id="menu-bar">
-        About | Legal | <a href="https://github.com/RowanAJMarshall/OcGenerator">Source Code</a>
-    </div>
+<body>
+    {% block content %}
     <main id="main">
         <h1 id="title">OcGenerator</h1>
         <section>
@@ -26,10 +16,11 @@
             Your go-to tool for ocarina tablature generation!
         </p>
             <form enctype="multipart/form-data" action="/" method="post">
-                Supported formats:
+                <span>Supported formats:</span>
                 mp3 |
                 wav |
-                ogg
+                ogg |
+                webm
                 <br><br>
                 <input type="file" name="upload" value="upload" id="choose-file">
                 <input type="submit" value="Submit" onclick="ShowLoading()" id="submit">
@@ -40,13 +31,13 @@
                     <summary>Advanced Settings</summary>
                     <br>
                     <div>
-                        Start at 
+                        <span title="When transcription should start and when it should end.">Transcription window:</span> &nbsp;&nbsp;
                     <input name="start" type="number" min="0" class="time_input">
-                        &nbsp; &nbsp; 
-                        End at
+                        s&nbsp; to &nbsp;
+
                     <input name="end" type="number" min="0" class="time_input">
                         <br><br>
-                    Instrument type: &nbsp;&nbsp;
+                    <span title="What instrument tabs should be generated">Instrument type:</span> &nbsp;&nbsp;
                     <select name="instrument">
                         <option value="12-hole" selected="selected">12-Hole</option>
                         <option value="11-hole" hidden="hidden">11-Hole</option>
@@ -55,7 +46,7 @@
                         <option value="4-hole" hidden="hidden">4-Hole</option>
                     </select>
                         <br><br>
-                        Pitch detection algorithm: &nbsp;&nbsp;
+                        <span title="Algorithm used for pitch detection, for more information see the user manual">Pitch detection algorithm:</span> &nbsp;&nbsp;
                     <select name="pitch-algorithm">
                         <option value="yin" selected>Yin</option>
                         <option value="yinfft">Yinfft</option>
@@ -76,5 +67,6 @@
             
         </section>
     </main>
+{% endblock %}
 </body>
 

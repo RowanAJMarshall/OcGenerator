@@ -4,18 +4,16 @@
 # OcGenerator - Your go-to tool for ocarina tablature generation!
 #
 # This file contains code/functions to extract pitches and notes from a music file
-import hashlib
 import sys
 
 import aubio
-import pydub
-import time
-import os
 
+from AudioConversion import convert
 from Ocgen import InstrumentDefinitions
 from Ocgen import note
 from Ocgen import tab_gen
 from Utils import config
+from Utils.file_utilities import seperate_path_and_file
 
 
 def in_bounds(avg_val: int, num: int) -> bool:
@@ -105,21 +103,6 @@ def write_result(image, name: str):
     return new_filename.replace(".wav",".png")
 
 
-def seperate_path_and_file(filepath):
-    slash_encountered = False
-    path = ""
-    filename = ""
-    for char in filepath[::-1]:
-        if char == "/":
-            slash_encountered = True
-            path += char
-        elif not slash_encountered:
-            filename += char
-        else:
-            path += char
-    return path[::-1], filename[::-1]
-
-
 # Checks format of given file, return string representation of format
 # Only checks file extension so far
 def check_format(filepath: str, char_num) -> str:
@@ -132,24 +115,6 @@ def check_format(filepath: str, char_num) -> str:
     if filepath[len(filepath) - char_num:] == "webm":
         return "webm"
     return ""
-
-
-def standardise_format(filepath: str) -> str:
-    if check_format(filepath, 3) == "mp3":
-        wav_filename = filepath.replace(".mp3", ".wav")
-        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
-        return wav_filename
-    elif check_format(filepath, 3) == "ogg":
-        wav_filename = filepath.replace(".ogg", ".wav")
-        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
-        return wav_filename
-    elif check_format(filepath, 4) == "webm":
-        wav_filename = filepath.replace(".webm", ".wav")
-        pydub.AudioSegment.from_file(filepath).export(wav_filename, format='wav')
-        return wav_filename
-    return filepath
-
-
 
 
 # Uses Aubio to extract notes
@@ -205,7 +170,7 @@ def get_instrument(instrument_name: str) -> InstrumentDefinitions.Instrument:
 # Main entry point to program
 def main(filepath: str, start_time, end_time, instrument_name, pitch_algorithm):
     config.setup_main_config()
-    filepath = standardise_format(filepath)
+    filepath = convert.standardise_format(filepath)
     try:
         pitch_list, times = get_pitches(filepath, start_time, end_time, pitch_algorithm)
     except RuntimeError:

@@ -1,10 +1,9 @@
-//function onload() {
-//    console.log("Hide")
-//    $('#loading').hide()
-//}
+
+var recording = 0;
 
 function ShowLoading()
 {
-    $('#loading').show()
-    console.log("Show")
+    $('#loading').show();
+    UploadFormAjax();
 }
+

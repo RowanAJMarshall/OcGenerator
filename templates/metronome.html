@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+<head>
+    {% block head %}
+    <script type="text/javascript" src="{{ url_for('static', filename='metronome.js') }}"></script>
+    {% endblock %}
+
+
+</head>
+<body>
+    {% block content %}
+    <main id="main">
+        <h1 id="title">Metronome</h1>
+            <section>
+
+                <p id="subtitle">
+                    Your go-to tool for ocarina tablature generation!
+                </p>
+
+                BPM: &nbsp;&nbsp; <input type="number" max="180" id="bpm">
+                <button value="Start" id="start" onclick="startMetronome()">Start</button>
+                    <button value="Stop" id="stop" onclick="stopMetronome()">Stop</button>
+
+            </section>
+        </main>
+    {% endblock %}
+</body>
+
+
+http://soundbible.com/2044-Tick.html

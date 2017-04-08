@@ -11,11 +11,27 @@ app = Flask(__name__)
 app.secret_key = "42"
 app.config['DEBUG'] = True
 UPLOAD_FOLDER = './uploads/'
+# app.run(debug=True)
+
+
+@app.route('/manual.html', methods=["GET"])
+def manual():
+    return app.send_static_file('manual.pdf')
+    # return render_template('manual.html')
+
+
+@app.route('/audioconversion', methods=['GET'])
+def audioconversion():
+    return render_template('audioconversion.html')
 
 
 @app.route('/index.html')
 def index():
     return render_template("index.html")
+
+@app.route('/metronome')
+def metronome():
+    return render_template("metronome.html")
 
 
 @app.route("/", methods=["POST"])
@@ -26,16 +42,18 @@ def upload_file():
     end = sys.maxsize
     pitch_algorithm = "yin"
 
+    print(str(request))
     if "upload" not in request.files:
         print("File not in there")
         flash("No file part")
         return redirect(request.url)
-
     if request.form['start']: start = int(request.form['start'])
     if request.form['end']: end = int(request.form['end'])
     if request.form['pitch-algorithm']: pitch_algorithm = request.form['pitch-algorithm']
 
     file = request.files['upload']
+    if not file:
+        file = request.files['recording']
 
     if file:
         new_filename = generate_filename(file.filename) + "." + get_file_extension(file.filename)
@@ -54,13 +72,17 @@ def covert_music_page():
 @app.route("/audioconversion", methods=["POST"])
 def start_audio_conversion():
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    print("Files: " + str(request.files))
 
-    if "upload" not in request.files:
-        print("File not in there")
+    if "upload" not in request.files and "recording" not in request.files:
+        print("Balls")
         flash("No file part")
         return redirect(request.url)
 
-    file = request.files['upload']
+    try:
+        file = request.files['upload']
+    except KeyError:
+        file = request.files['recording']
 
     if file:
 
@@ -70,7 +92,7 @@ def start_audio_conversion():
         err, result = convert.convert(os.path.join(app.config['UPLOAD_FOLDER'], new_filename), target_format)
 
         if err is not None:
-            return render_template('audioconversion.html', err=err)
+            return render_template('audioconversion.html', error=err)
         return render_template('audioconversion.html', converted_file=result, format=get_file_extension(result))
     return render_template('audioconversion.html')
 

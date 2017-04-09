@@ -16,7 +16,7 @@
             Your go-to tool for ocarina tablature generation!
         </p>
             <form enctype="multipart/form-data" action="/" method="post" id="form">
-                <span>Supported formats:</span>
+                <span title="What formats the service will currently accept. Other formats will cause an error.">Supported formats:</span>
                 mp3 |
                 wav |
                 ogg |
@@ -55,6 +55,9 @@
                         <option value="fcomb">Fast harmonic comb filter</option>
                         <option value="schmitt">Schmitt trigger</option>
                     </select>
+                        <br><br>
+                        <span title="Allow dynamic shifting of range. View manual for more details.">Use octave shifting:</span> &nbsp;&nbsp;
+                        <input name="shifting" type="checkbox" checked>
                     </div>
                     
                 </details>

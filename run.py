@@ -36,11 +36,13 @@ def metronome():
 
 @app.route("/", methods=["POST"])
 def upload_file():
+
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     start = 0
     end = sys.maxsize
     pitch_algorithm = "yin"
+    shifting = False
 
     print(str(request))
     if "upload" not in request.files:
@@ -50,16 +52,14 @@ def upload_file():
     if request.form['start']: start = int(request.form['start'])
     if request.form['end']: end = int(request.form['end'])
     if request.form['pitch-algorithm']: pitch_algorithm = request.form['pitch-algorithm']
+    if 'shifting' in request.form: shifting = True
 
     file = request.files['upload']
-    if not file:
-        file = request.files['recording']
-
     if file:
         new_filename = generate_filename(file.filename) + "." + get_file_extension(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
         err, result = ocgen.main(os.path.join(app.config['UPLOAD_FOLDER'], new_filename), start, end,
-                                 request.form['instrument'], pitch_algorithm)
+                                 request.form['instrument'], pitch_algorithm, shifting)
         return get_result(err, result)
     return index()
 

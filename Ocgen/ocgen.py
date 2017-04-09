@@ -5,7 +5,7 @@
 #
 # This file contains code/functions to extract pitches and notes from a music file
 import sys
-
+import os
 import aubio
 
 from AudioConversion import convert
@@ -60,10 +60,8 @@ def get_pitches(filename: str, start, end, pitch_algorithm) -> list:
     samplerate = 44100//downsample
     win_s = 4096//downsample
     hop_s = 512//downsample
-
     s = aubio.source(filename, samplerate, hop_s)
     samplerate = s.samplerate
-
     tolerance = 0.8
     # Uses Yin pitch detection algorithm
     pitch_o = aubio.pitch(pitch_algorithm, win_s, hop_s, samplerate)
@@ -168,36 +166,35 @@ def get_instrument(instrument_name: str) -> InstrumentDefinitions.Instrument:
 
 
 # Main entry point to program
-def main(filepath: str, start_time, end_time, instrument_name, pitch_algorithm):
+def main(filepath: str, start_time: int, end_time: int, instrument_name: str, pitch_algorithm: str, shifting: bool):
     config.setup_main_config()
-    filepath = convert.standardise_format(filepath)
+
     try:
+        filepath = convert.standardise_format(filepath)
         pitch_list, times = get_pitches(filepath, start_time, end_time, pitch_algorithm)
     except RuntimeError:
         return "Something went wrong during transcription", None
+    except convert.NotSupportedException:
+        return "File format is not supported", None
+
     lst = smooth_pitches(pitch_list)
-    # lst = get_notes(filepath)
-    # new_list = []
-    # for i in lst:
-    #     new_list.append(aubio.miditofreq(i))
-
     instrument = get_instrument(instrument_name)
+    not_enough_range_error = "The chosen instrument does not have enough range", None
 
-
-    shift = 0
+    # Get the octave shift needed to accurately transcribe song
     try:
         shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
     except note.NotEnoughRangeError:
-        return "The chosen instrument does not have enough range", None
+        return not_enough_range_error
+    # If user doesn't want to use octave shifting, make sure no shifting is necessary. If it is, return error.
+    if not shifting and shift != 0:
+        return "The chosen instrument does not have enough range. Try turning on octave shifting.", None
 
     lst = tab_gen.construct_notes(lst, instrument.get_notes(), shift)
     img = tab_gen.construct_tabs(lst, instrument)
-    # lst = tab_gen.construct_notes(lst, note.get_12_hole_notes(), shift)
-    # img = tab_gen.construct_tabs(lst)
 
     img_name = write_result(img, filepath)
 
-    # Hello World!
     return None, img_name
 
 

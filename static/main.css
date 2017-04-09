@@ -14,6 +14,10 @@
     
 }
 
+#main span {
+    border-bottom: 1px dotted black;
+}
+
 #advanced-settings {
     width: 30rem;
     margin: auto;

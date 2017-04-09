@@ -15,16 +15,16 @@ def convert(filepath: str, target_format: str) -> str:
     print(filepath)
     current_format = file_utilities.get_file_extension(filepath)
     if current_format not in supported_formats:
-        return "Format is not supported at this time", None
+        raise NotSupportedException
 
     _, new_filename = file_utilities.seperate_path_and_file(filepath.replace("." + current_format, "." + target_format))
     pydub.AudioSegment.from_file(filepath).export("static/" + new_filename, format=target_format)
-    return None, new_filename
+    return new_filename
 
 
 # Standardises given file to 'wav' so it can be transcribed
 def standardise_format(filepath: str) -> str:
-    return convert(filepath, 'wav')
+    return "uploads/" + convert(filepath, 'wav')
 
 
 def standardise_format1(filepath: str) -> str:

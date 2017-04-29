@@ -67,21 +67,6 @@ def find_closest_note(note: float, ref_notes, shift_amount=0):
     return min(ref_notes, key=lambda x: abs(float(x[1]) - note))
 
 
-def alt_find_closest_note1(note: float, ref_notes, shift_amount=0):
-
-    ref_notes = shift(ref_notes, shift_amount)
-
-    prev = ref_notes[0]
-    for index, n in enumerate(ref_notes):
-        if note == n[1]:
-            return n
-        elif note > n[1]:
-            prev = n
-            continue
-        elif note < n[1]:
-            return n
-    return prev
-
 
 # Ocatave-shift pitches up
 def upshift(note_list: list, shift_num):
@@ -94,12 +79,6 @@ def upshift(note_list: list, shift_num):
         for index, n in enumerate(note_list):
             note_list[index] *= upshift_factor
     return note_list
-
-    # note_list = list(note_list)
-    # upshift_factor = 2 ** shift_num
-    # for index, n in enumerate(note_list):
-    #     note_list[index][1] *= upshift_factor
-    # return note_list
 
 
 # Ocatave-shift pitches down

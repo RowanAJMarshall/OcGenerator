@@ -17,9 +17,16 @@
                     Your go-to tool for ocarina tablature generation!
                 </p>
 
-                BPM: &nbsp;&nbsp; <input type="number" max="180" id="bpm">
+                BPM: &nbsp;&nbsp; <input type="range" value="90" min="1" max="180" step="1" id="bpm" onchange="displayValue(this.value)">
+                &nbsp;&nbsp; <span id="bpm-val" title="Beats-per-minute">90</span>
+                <script>
+                  function displayValue(value) {
+                    $('#bpm-val').html(value);
+                  }
+                </script>
+                <br><br>
                 <button value="Start" id="start" onclick="startMetronome()">Start</button>
-                    <button value="Stop" id="stop" onclick="stopMetronome()">Stop</button>
+                    <button value="Stop" id="stop" onclick="stopMetronome()" disabled>Stop</button>
 
             </section>
         </main>
@@ -27,4 +34,4 @@
 </body>
 
 
-http://soundbible.com/2044-Tick.html
+

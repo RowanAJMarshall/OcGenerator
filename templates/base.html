@@ -10,15 +10,21 @@
                     window.alert("{{ error }}");
                 </script>
             {% endif %}
+
     {% block head %}
     {% endblock %}
 </head>
 <body>
-<div id="menu-bar">
-        About | Legal | <a href="/index.html">OcGen Transcriber</a>  | <a href="https://github.com/RowanAJMarshall/OcGenerator">Source Code</a> |
+<div id="content">
+    <div id="menu-bar">
+        <div id="menu-items">
+        <a href="/index.html">OcGen Transcriber</a>  |  |
             <a href="/audioconversion">Convert Music </a> | <a href="/manual.html"> Manual</a> | <a href="/metronome">Metronome</a>
+        </div>
     </div>
 {% block content %}
 {% endblock %}
+</div>
+<div id="footer">View the <a href="https://github.com/RowanAJMarshall/OcGenerator">source code</a> code on <img id="github-logo" src="{{ url_for('static', filename='GitHub_Logo.png') }}" width="50px" height="20px"> </div>
 </body>
 </html>

@@ -15,7 +15,7 @@
         <p id="subtitle">
             Your go-to tool for ocarina tablature generation!
         </p>
-            <form enctype="multipart/form-data" action="/" method="post" id="form">
+            <form enctype="multipart/form-data" action="/api/transcript" method="post" id="form">
                 <span title="What formats the service will currently accept. Other formats will cause an error.">Supported formats:</span>
                 mp3 |
                 wav |
@@ -57,7 +57,11 @@
                     </select>
                         <br><br>
                         <span title="Allow dynamic shifting of range. View manual for more details.">Use octave shifting:</span> &nbsp;&nbsp;
-                        <input name="shifting" type="checkbox" checked>
+                        <select name="shifting">
+                            <option value="True" selected="selected">Yes</option>
+                            <option value="False">No</option>
+                            <option value="Force">Force Transcription</option>
+                        </select>
                     </div>
                     
                 </details>

@@ -148,11 +148,6 @@ def get_notes(filename):
     return note_list
 
 
-
-
-
-
-
 class NoValidInstrumentException(Exception):
     pass
 
@@ -166,13 +161,13 @@ def get_instrument(instrument_name: str) -> InstrumentDefinitions.Instrument:
 
 
 # Main entry point to program
-def main(filepath: str, start_time: int, end_time: int, instrument_name: str, pitch_algorithm: str, shifting: bool):
+def main(filepath: str, start_time: int, end_time: int, instrument_name: str, pitch_algorithm: str, shifting: str):
     config.setup_main_config()
-
     try:
         filepath = convert.standardise_format(filepath)
         pitch_list, times = get_pitches(filepath, start_time, end_time, pitch_algorithm)
-    except RuntimeError:
+    except RuntimeError as re:
+        print(str(re))
         return "Something went wrong during transcription", None
     except convert.NotSupportedException:
         return "File format is not supported", None
@@ -181,14 +176,22 @@ def main(filepath: str, start_time: int, end_time: int, instrument_name: str, pi
     instrument = get_instrument(instrument_name)
     not_enough_range_error = "The chosen instrument does not have enough range", None
 
+    shift = None
     # Get the octave shift needed to accurately transcribe song
-    try:
-        shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
-    except note.NotEnoughRangeError:
-        return not_enough_range_error
-    # If user doesn't want to use octave shifting, make sure no shifting is necessary. If it is, return error.
-    if not shifting and shift != 0:
-        return "The chosen instrument does not have enough range. Try turning on octave shifting.", None
+    if shifting == "True":
+        try:
+            shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
+        except note.NotEnoughRangeError:
+            return not_enough_range_error
+    elif shifting == "False":
+        try:
+            shift = note.get_shift(lst, 0, [i[1] for i in instrument.get_notes()])
+        except note.NotEnoughRangeError:
+            return not_enough_range_error
+        if shift != 0:
+            return "The chosen instrument does not have enough range. Try turning on octave shifting.", None
+    elif shifting == "Force":
+        shift = 0
 
     lst = tab_gen.construct_notes(lst, instrument.get_notes(), shift)
     img = tab_gen.construct_tabs(lst, instrument)

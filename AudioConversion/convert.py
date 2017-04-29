@@ -24,7 +24,7 @@ def convert(filepath: str, target_format: str) -> str:
 
 # Standardises given file to 'wav' so it can be transcribed
 def standardise_format(filepath: str) -> str:
-    return "uploads/" + convert(filepath, 'wav')
+    return "static/" + convert(filepath, 'wav')
 
 
 def standardise_format1(filepath: str) -> str:

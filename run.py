@@ -27,10 +27,11 @@ def upload_file():
         print("File not in there")
         flash("No file part")
         return redirect(request.url)
+
     if request.form['start']: start = int(request.form['start'])
     if request.form['end']: end = int(request.form['end'])
     if request.form['pitch-algorithm']: pitch_algorithm = request.form['pitch-algorithm']
-    if request.form['shifting']: shifting = request.form['shifting']#'shifting' in request.form: shifting = True
+    if request.form['shifting']: shifting = request.form['shifting']
 
     file = request.files['upload']
     if file:
@@ -48,7 +49,6 @@ def start_audio_conversion():
     print("Files: " + str(request.files))
 
     if "upload" not in request.files and "recording" not in request.files:
-        print("Balls")
         flash("No file part")
         return redirect(request.url)
 

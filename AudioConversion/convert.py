@@ -15,7 +15,7 @@ def convert(filepath: str, target_format: str) -> str:
     print(filepath)
     current_format = file_utilities.get_file_extension(filepath)
     if current_format not in supported_formats:
-        raise NotSupportedException
+        raise NotSupportedException("File format unrecognised.")
 
     _, new_filename = file_utilities.seperate_path_and_file(filepath.replace("." + current_format, "." + target_format))
     pydub.AudioSegment.from_file(filepath).export("static/" + new_filename, format=target_format)

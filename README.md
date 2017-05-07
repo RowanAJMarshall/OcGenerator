@@ -11,7 +11,7 @@ it supports .wav, .ogg, .mp3 and .webm formats.
 See my blog of my experience doing this project at my [blog!](http://rowansdissertation.blogspot.co.uk/|)
 
 ### Running Instructions:
-* 'pip install requirements.txt'. THis will install all dependencies. This program has been developed on 3.5, and is incompatible with Python 2.
+* 'pip install -r requirements.txt'. THis will install all dependencies. This program has been developed on 3.5, and is incompatible with Python 2.
 * Set PYTHONPATH to be the root directory of this program.
 * 'export FLASK_APP=run.py'. This will set up Flasm on the correct file.
 * 'flask run'. This will run the program on port 5000.

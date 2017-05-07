@@ -11,12 +11,13 @@ def navigate(*args):
 
 
 @step('I have selected the file (\S+)')
-def i_have_selected_the_file(step, filename):
+def i_have_selected_the_file(self, filename):
     driver.find_element_by_id("advanced-settings").click()
     file_select_elem = driver.find_element_by_id('choose-file')
-    path = os.getcwd() + '/music/' + filename
     path = "~/Diss/ocgen/app/music/" + filename
     file_select_elem.send_keys(path)
+
+    self.print()
 
 
 @step('I click on (\S+)')

@@ -2,17 +2,10 @@ import unittest
 
 from Ocgen import InstrumentDefinitions
 from Ocgen import note
-from Ocgen.note import Note
 from Ocgen import tab_gen
 
 
 class TabGenTests(unittest.TestCase):
-
-    def test_get_max_min(self):
-        notes = [Note(25, 5), Note(65, 8), Note(5, 10), Note(15, 8)]
-        max = 65
-        min = 5
-        self.assertEqual(tab_gen.get_max_min_notes(notes), (max, min))
 
     def test_get_note_box(self):
         instrument = InstrumentDefinitions.TwelveHoleOcarina()
@@ -21,6 +14,7 @@ class TabGenTests(unittest.TestCase):
         self.assertEqual(real_box, box)
 
     def test_construct_notes(self):
+        instrument = InstrumentDefinitions.TwelveHoleOcarina()
         pitches = [440, 740, 1320, 1171]
         actual = [["A", 440, 1], ["F\#", 739.99, 10], ["E", 1318.51, 20], ["D", 1174.66, 18]]
-        self.assertEqual(tab_gen.construct_notes(pitches, note.get_12_hole_notes()), actual)
+        self.assertEqual(tab_gen.construct_notes(pitches, instrument.get_notes()), actual)

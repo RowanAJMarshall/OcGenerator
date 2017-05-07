@@ -19,10 +19,12 @@ class Instrument(object, metaclass=abc.ABCMeta):
     NUM_OF_NOTES = None
     SPRITE_SHEET = None
 
+    # Should return the note range of this instrument
     @abc.abstractmethod
     def get_notes(self):
         raise NotImplementedError("You must define get_notes to use this base class")
 
+    # Returns the x,y size
     def get_tabs_size(self, notes: list) -> tuple:
         x = self.IMAGES_PER_LINE_TABS * self.X_CONST
         y = math.ceil(len(notes) / self.IMAGES_PER_SPRITE_SHEET_LINE) * self.Y_CONST
@@ -31,6 +33,7 @@ class Instrument(object, metaclass=abc.ABCMeta):
     def get_note_box(self, x_val, y_val):
         return x_val, y_val, x_val + self.X_CONST, y_val + self.Y_CONST
 
+    # Constructs tabs from the given list an returns an image
     def construct_tabs(self, notes: list):
         size_tuple = self.get_tabs_size(notes)
         new_image = Image.new('RGB', size_tuple, color=(225, 241, 241))

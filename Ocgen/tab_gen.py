@@ -29,17 +29,6 @@ def construct_notes(pitch_list, ref_notes, shift_amount=0):
     return freq_list
 
 
-def get_max_min_notes(notes: list):
-    max = 0
-    min = sys.maxsize
-    for note in notes:
-        if note.pitch < min:
-            min = note.pitch
-        elif note.pitch > max:
-            max = note.pitch
-    return max, min
-
-
 def pitch_to_note_transform(pitches):
     min_note = sys.maxsize
     max_note = 0

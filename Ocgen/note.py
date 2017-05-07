@@ -7,24 +7,9 @@
 import copy
 
 
-class Note:
-    def __init__(self, pitch: int, pitch_num: int):
-        self.pitch = pitch
-        self.pitch_num = pitch_num
-
-
 # Throw in the current instrument is out of range
 class NotEnoughRangeError(Exception):
     pass
-
-
-# Representation of the range of a 12-hole ocarina or arbitrary tuning
-def get_12_hole_notes():
-    # [(Note, Frequency, Integer representation)]
-    return [["A", 440, 1], ["A\#", 466.16, 2], ["B", 493.88, 3], ["C", 523.25, 4], ["C\#", 554.37, 5], ["D", 587.33, 6],
-           ["D\#", 622.25, 7], ["E", 659.26, 8], ["F", 698.46, 9], ["F\#", 739.99, 10], ["G", 783.99, 11],
-           ["G#", 830.61, 12], ["A", 880, 13], ["A\#", 932.33, 14], ["B", 987.77, 15], ["C", 1046.5, 16],
-           ["C\#", 1108.73, 17], ["D", 1174.66, 18], ["D\#", 1244.51, 19], ["E", 1318.51, 20], ["F", 1396.91, 21]]
 
 
 # Gets the octave shift required, if any
@@ -62,10 +47,10 @@ def shift(lst, shift_num=0):
     return lst
 
 
+# Finds the closest note to the given note value and returns it
 def find_closest_note(note: float, ref_notes, shift_amount=0):
     ref_notes = shift(ref_notes, shift_amount)
     return min(ref_notes, key=lambda x: abs(float(x[1]) - note))
-
 
 
 # Ocatave-shift pitches up
@@ -92,17 +77,6 @@ def downshift(note_list: list, shift_num):
         for index, n in enumerate(note_list):
             note_list[index] /= downshift_factor
     return note_list
-
-    # note_list = list(note_list)
-    # downshift_factor = 2 ** abs(shift_num)
-    # for index, n in enumerate(note_list):
-    #     note_list[index][1] /= downshift_factor
-    # return note_list
-
-
-
-# all_notes = [i for i in range(0, 128)]
-# notes_12_hole = [(index+1, k) for index, k in enumerate(range(69, 91))]
 
 
 
